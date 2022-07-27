@@ -19,11 +19,24 @@ class JoinServer {
 		/**
 		 * These options are primarily intended for end users
 		 */
+
+		// Hex-encoded private key for your joinPartAgent address
 		privateKey,
+
+		// HTTP port the server listens on
 		port = 5555,
+
+		// Logger (pino) level: one of 'fatal', 'error', 'warn', 'info', 'debug', 'trace' or 'silent'.
 		logLevel = 'info',
-		customJoinRequestValidator = async (/* joinRequest */) => {},
-		customRoutes = (/*app*/) => {},
+
+		// Used to validate custom fields in join requests. The default function does nothing.
+		customJoinRequestValidator = async (/* address, joinRequest */) => {},
+
+		// Used to add custom routes to the HTTP server. The default function does nothing.
+		customRoutes = (/*expressApp*/) => {},
+
+		// Gets called after a member is successfully joined to the Data Union smart contract. The default function does nothing.
+		onMemberJoin = async (/* member, dataUnion, chain */) => {},
 
 		/**
 		 * These options are primarily intended for advanced use or passing in test mocks
@@ -35,7 +48,7 @@ class JoinServer {
 			level: logLevel,
 		}),
 		signedRequestValidator = SignedRequestValidator.validator,
-		joinRequestService = new service.JoinRequestService(logger),
+		joinRequestService = new service.JoinRequestService(logger, onMemberJoin),
 	} = {}) {
 
 		this.expressApp = expressApp
@@ -109,7 +122,7 @@ class JoinServer {
 		}
 		this.expressApp.listen(this.port, backlog, callback)
 	}
-	
+
 	sendJsonResponse(res, status, response) {
 		res.set('content-type', 'application/json')
 		res.status(status)
@@ -133,7 +146,7 @@ class JoinServer {
 			this.sendJsonError(res, 400, `Invalid member address: '${err.address}'`)
 			return
 		}
-	
+
 		let dataUnion
 		try {
 			dataUnion = new domain.Address(req.validatedRequest.dataUnion)
@@ -162,15 +175,9 @@ class JoinServer {
 
 		try {
 			const client = this.clients[chain.toString()]
-			const joinRequest = await this.joinRequestService.create(client, member, dataUnion)
-
-			// Convert app internal representation to JSON
-			const joinRequestJsonResponse = {
-				member: joinRequest.member.toString(),
-				dataUnion: joinRequest.dataUnion.toString(),
-			}
-			this.logger.info(joinRequest)
-			this.sendJsonResponse(res, 201, joinRequestJsonResponse)
+			const joinResponse = await this.joinRequestService.create(client, member.toString(), dataUnion.toString(), req.validatedRequest.chain)
+			this.logger.info(joinResponse)
+			this.sendJsonResponse(res, 200, joinResponse)
 		} catch(err) {
 			this.logger.info(err)
 			this.sendJsonError(res, 400, err.message)
