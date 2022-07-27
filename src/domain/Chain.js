@@ -1,8 +1,14 @@
 class Chain {
-	static Ethereum = new Chain("Ethereum")
-	static Polygon = new Chain("Polygon")
+	static Ethereum = new Chain("ethereum")
+	static Polygon = new Chain("polygon")
 
 	constructor(name) {
+		if (name === undefined) {
+			throw new Error('Chain name is required')
+		}
+		if (typeof name !== 'string') {
+			throw new Error('Chain name must be a string')
+		}
 		this.name = name
 	}
 
@@ -10,20 +16,20 @@ class Chain {
 		return this.name
 	}
 
-	static fromName(name) {
+	static fromName(name) /* Chain | undefined */{
 		if (name === undefined) {
-			throw new Error('Given chain name is undefined')
+			return undefined
 		}
 		if (typeof name !== 'string') {
-			throw new Error('Given chain name is not a String')
+			return undefined
 		}
 		switch (name.toLowerCase()) {
-		case Chain.Ethereum.toString().toLowerCase():
+		case Chain.Ethereum.toString():
 			return Chain.Ethereum
-		case Chain.Polygon.toString().toLowerCase():
+		case Chain.Polygon.toString():
 			return Chain.Polygon
 		default:
-			return undefined
+			throw new Error(`Chain name is unknown: '${name}'`)
 		}
 	}
 }
