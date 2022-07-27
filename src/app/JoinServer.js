@@ -4,12 +4,13 @@ const http = require('http')
 const pino = require('pino')
 
 const { DataUnionClient } = require('@dataunions/client')
+const config = require('@streamr/config')
 
 const handler = require('../handler')
 const domain = require('../domain')
 const service = require('../service')
 
-
+const DEFAULT_CHAIN_NAME = 'polygon'
 const TOLERANCE_MILLIS = 5 * 60 * 1000 // 5 min
 const SignedRequestValidator = require('./SignedRequestValidatorMiddleware')(TOLERANCE_MILLIS)
 
@@ -33,18 +34,12 @@ class JoinServer {
 			name: 'main',
 			level: logLevel,
 		}),
-		dataUnionClient = new DataUnionClient({
-			auth: {
-				privateKey,
-			}
-		}),
 		signedRequestValidator = SignedRequestValidator.validator,
-		joinRequestService = new service.JoinRequestService(logger, dataUnionClient),
+		joinRequestService = new service.JoinRequestService(logger),
 	} = {}) {
 
 		this.expressApp = expressApp
 		this.logger = logger
-		this.dataUnionClient = dataUnionClient
 		this.signedRequestValidator = signedRequestValidator
 		this.customJoinRequestValidator = customJoinRequestValidator
 		this.joinRequestService = joinRequestService
@@ -58,6 +53,10 @@ class JoinServer {
 		}
 		this.httpServer = httpServer
 		this.port = port
+
+		this.clients = new Map()
+		this.clients.set('ethereum', this.newDataUnionClient('ethereum', privateKey))
+		this.clients.set('polygon', this.newDataUnionClient('polygon', privateKey))
 
 		// Listen for Linux Signals
 		const invalidExitArg = 128
@@ -76,6 +75,21 @@ class JoinServer {
 		})
 
 		this.routes()
+	}
+
+	newDataUnionClient(chain, privateKey) {
+		const chains = config.Chains.load()
+		const options = {
+			auth: {
+				privateKey,
+			},
+			network: {
+				name: chains[chain].name,
+				chainId: chains[chain].id,
+				rpcs: chains[chain].rpcEndpoints,
+			}
+		}
+		return new DataUnionClient(options)
 	}
 
 	routes() {
@@ -128,6 +142,17 @@ class JoinServer {
 			return
 		}
 
+		let chain
+		try {
+			chain = domain.Chain.fromName(req.validatedRequest.chain)
+		} catch (err) {
+			this.sendJsonError(res, 400, `Invalid chain name: '${req.validatedRequest.chain}'`)
+			return
+		}
+		if (chain === undefined) {
+			chain = DEFAULT_CHAIN_NAME
+		}
+
 		try {
 			await this.customJoinRequestValidator(req.body.address, req.validatedRequest)
 		} catch (err) {
@@ -136,7 +161,8 @@ class JoinServer {
 		}
 
 		try {
-			const joinRequest = await this.joinRequestService.create(member, dataUnion)
+			const client = this.clients[chain.toString()]
+			const joinRequest = await this.joinRequestService.create(client, member, dataUnion)
 
 			// Convert app internal representation to JSON
 			const joinRequestJsonResponse = {

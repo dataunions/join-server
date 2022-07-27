@@ -34,7 +34,7 @@ describe('Join Request Service', () => {
 			getDataUnion: sinon.stub().resolves(dataUnionObject),
 		}
 
-		joinRequestService = new JoinRequestService(logger, dataUnionClient)
+		joinRequestService = new JoinRequestService(logger)
 	})
 
 	afterEach(() => {
@@ -44,7 +44,7 @@ describe('Join Request Service', () => {
 	describe('create', () => {
 
 		it('adds members using the DU client', async () => {
-			const response = await joinRequestService.create(member, dataUnion)
+			const response = await joinRequestService.create(dataUnionClient, member, dataUnion)
 			assert.isTrue(dataUnionObject.addMembers.calledWith([MEMBER_ADDRESS]))
 			assert.equal(response.member, MEMBER_ADDRESS)
 			assert.equal(response.dataUnion, DATAUNION_ADDRESS)
@@ -52,12 +52,12 @@ describe('Join Request Service', () => {
 	
 		it('rejects when data union is not found', async () => {
 			dataUnionClient.getDataUnion = sinon.stub().rejects()
-			await expect(joinRequestService.create(member, dataUnion)).to.be.rejectedWith(DataUnionRetrievalError)
+			await expect(joinRequestService.create(dataUnionClient, member, dataUnion)).to.be.rejectedWith(DataUnionRetrievalError)
 		})
 	
 		it('rejects when joining data union fails', async () => {
 			dataUnionObject.addMembers = sinon.stub().rejects()
-			await expect(joinRequestService.create(member, dataUnion)).to.be.rejectedWith(DataUnionJoinError)
+			await expect(joinRequestService.create(dataUnionClient, member, dataUnion)).to.be.rejectedWith(DataUnionJoinError)
 		})
 	})
 

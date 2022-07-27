@@ -1,13 +1,12 @@
 class JoinRequestService {
-	constructor(logger, dataUnionClient) {
+	constructor(logger) {
 		this.logger = logger
-		this.dataUnionClient = dataUnionClient
 	}
 
-	async create(member, dataUnion) {
+	async create(dataUnionClient, member, dataUnion) {
 		let du
 		try {
-			du = await this.dataUnionClient.getDataUnion(dataUnion.toString())
+			du = await dataUnionClient.getDataUnion(dataUnion.toString())
 		} catch (err) {
 			throw new DataUnionRetrievalError(`Error while retrieving data union ${dataUnion}: ${err.message}`)
 		}

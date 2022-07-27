@@ -9,11 +9,8 @@ describe('POST /join', async () => {
 
 	beforeEach(() => {
 		// JoinRequestService with mocked create()
-		const joinRequestService = new service.JoinRequestService(
-			logger,
-			undefined, // DU client
-		)
-		joinRequestService.create = sinon.spy((memberAddress, dataUnionAddress) => {
+		const joinRequestService = new service.JoinRequestService(logger)
+		joinRequestService.create = sinon.spy((_dataUnionClient, memberAddress, dataUnionAddress) => {
 			return {
 				member: memberAddress,
 				dataUnion: dataUnionAddress,
@@ -40,6 +37,16 @@ describe('POST /join', async () => {
 				address: '0x766760C748bcEcf5876a6469a6aed3C642CdA261',
 				request: JSON.stringify({
 					dataUnion: '0x81ed645D344cB2096aBA56B94d336E6dcF80f6C6',
+				}),
+			},
+		},
+		{
+			name: 'send join data union request with chain defined',
+			body: {
+				address: '0x766760C748bcEcf5876a6469a6aed3C642CdA261',
+				request: JSON.stringify({
+					dataUnion: '0x81ed645D344cB2096aBA56B94d336E6dcF80f6C6',
+					chain: 'ethereum',
 				}),
 			},
 		},
@@ -79,6 +86,17 @@ describe('POST /join', async () => {
 				}),
 			},
 			expectedErrorMessage: `Invalid Data Union contract address: '0x01234'`,
+		},
+		{
+			name: 'client sends invalid chain name',
+			body: {
+				address: '0x766760C748bcEcf5876a6469a6aed3C642CdA261',
+				request: JSON.stringify({
+					dataUnion: '0x81ed645D344cB2096aBA56B94d336E6dcF80f6C6',
+					chain: 'foobar',
+				}),
+			},
+			expectedErrorMessage: `Invalid chain name: 'foobar'`,
 		},
 	]
 	testCases.forEach((tc) => {
