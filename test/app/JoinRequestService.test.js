@@ -3,7 +3,7 @@ const { assert, expect } = chai
 chai.use(require('chai-as-promised'))
 const sinon = require('sinon')
 const pino = require('pino')
-const { JoinRequestService, DataUnionJoinError, DataUnionRetrievalError } = require('../../src/service/JoinRequestService')
+const { JoinRequestService, DataUnionJoinError, DataUnionRetrievalError } = require('../../src/app/JoinRequestService')
 
 describe('Join Request Service', () => {
 	const MEMBER_ADDRESS = '0x0123456789012345678901234567890123456789'

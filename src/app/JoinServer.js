@@ -8,7 +8,7 @@ const config = require('@streamr/config')
 
 const handler = require('../handler')
 const domain = require('../domain')
-const service = require('../service')
+const { JoinRequestService } = require('./JoinRequestService')
 
 const DEFAULT_CHAIN_NAME = 'polygon'
 const TOLERANCE_MILLIS = 5 * 60 * 1000 // 5 min
@@ -48,7 +48,7 @@ class JoinServer {
 			level: logLevel,
 		}),
 		signedRequestValidator = SignedRequestValidator.validator,
-		joinRequestService = new service.JoinRequestService(logger, onMemberJoin),
+		joinRequestService = new JoinRequestService(logger, onMemberJoin),
 	} = {}) {
 
 		this.expressApp = expressApp

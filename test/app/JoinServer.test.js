@@ -2,14 +2,14 @@ const { newUnitTestServer, logger } = require('../handler/newUnitTestServer')
 const request = require('supertest')
 const { assert } = require('chai')
 const sinon = require('sinon')
-const service = require('../../src/service')
+const app = require('../../src/app')
 
 describe('POST /join', async () => {
 	let srv
 
 	beforeEach(() => {
 		// JoinRequestService with mocked create()
-		const joinRequestService = new service.JoinRequestService(
+		const joinRequestService = new app.JoinRequestService(
 			logger,
 			undefined, // onMemberJoin
 		)
