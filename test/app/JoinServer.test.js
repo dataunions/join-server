@@ -11,9 +11,10 @@ describe('POST /join', async () => {
 		// JoinRequestService with mocked create()
 		const joinRequestService = new app.JoinRequestService(
 			logger,
+			undefined, // clients
 			undefined, // onMemberJoin
 		)
-		joinRequestService.create = sinon.spy((_dataUnionClient, member, dataUnion, chain) => {
+		joinRequestService.create = sinon.spy((member, dataUnion, chain) => {
 			return {
 				member,
 				dataUnion,

@@ -33,9 +33,12 @@ describe('Join Request Service', () => {
 			getDataUnion: sinon.stub().resolves(dataUnionObject),
 		}
 
+		const clients = new Map()
+		clients.set(CHAIN, dataUnionClient)
+
 		onMemberJoin = sinon.stub()
 
-		joinRequestService = new JoinRequestService(logger, onMemberJoin)
+		joinRequestService = new JoinRequestService(logger, clients, onMemberJoin)
 	})
 
 	afterEach(() => {
@@ -45,7 +48,7 @@ describe('Join Request Service', () => {
 	describe('create', () => {
 
 		it('adds members using the DU client', async () => {
-			const response = await joinRequestService.create(dataUnionClient, MEMBER_ADDRESS, DATAUNION_ADDRESS, CHAIN)
+			const response = await joinRequestService.create(MEMBER_ADDRESS, DATAUNION_ADDRESS, CHAIN)
 			assert.isTrue(dataUnionObject.addMembers.calledWith([MEMBER_ADDRESS]))
 			assert.equal(response.member, MEMBER_ADDRESS)
 			assert.equal(response.dataUnion, DATAUNION_ADDRESS)
@@ -54,21 +57,21 @@ describe('Join Request Service', () => {
 
 		it('rejects when data union is not found', async () => {
 			dataUnionClient.getDataUnion = sinon.stub().rejects()
-			await expect(joinRequestService.create(dataUnionClient, MEMBER_ADDRESS, DATAUNION_ADDRESS, CHAIN)).to.be.rejectedWith(DataUnionRetrievalError)
+			await expect(joinRequestService.create(MEMBER_ADDRESS, DATAUNION_ADDRESS, CHAIN)).to.be.rejectedWith(DataUnionRetrievalError)
 		})
 
 		it('rejects if the member is already a member', async () => {
 			dataUnionObject.isMember = sinon.stub().resolves(true),
-			await expect(joinRequestService.create(dataUnionClient, MEMBER_ADDRESS, DATAUNION_ADDRESS, CHAIN)).to.be.rejectedWith(DataUnionJoinError)
+			await expect(joinRequestService.create(MEMBER_ADDRESS, DATAUNION_ADDRESS, CHAIN)).to.be.rejectedWith(DataUnionJoinError)
 		})
 
 		it('rejects when joining data union fails', async () => {
 			dataUnionObject.addMembers = sinon.stub().rejects()
-			await expect(joinRequestService.create(dataUnionClient, MEMBER_ADDRESS, DATAUNION_ADDRESS, CHAIN)).to.be.rejectedWith(DataUnionJoinError)
+			await expect(joinRequestService.create(MEMBER_ADDRESS, DATAUNION_ADDRESS, CHAIN)).to.be.rejectedWith(DataUnionJoinError)
 		})
 
 		it('calls the onMemberJoin function on join', async() => {
-			await joinRequestService.create(dataUnionClient, MEMBER_ADDRESS, DATAUNION_ADDRESS, CHAIN)
+			await joinRequestService.create(MEMBER_ADDRESS, DATAUNION_ADDRESS, CHAIN)
 			assert.isTrue(onMemberJoin.calledWith(MEMBER_ADDRESS, DATAUNION_ADDRESS, CHAIN))
 		})
 	})

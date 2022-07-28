@@ -1,10 +1,12 @@
 class JoinRequestService {
-	constructor(logger, onMemberJoin) {
+	constructor(logger, clients, onMemberJoin) {
 		this.logger = logger
+		this.clients = clients
 		this.onMemberJoin = onMemberJoin
 	}
 
-	async create(dataUnionClient, member, dataUnion, chain) {
+	async create(member, dataUnion, chain) {
+		const dataUnionClient = this.clients.get(chain)
 		let du
 		try {
 			du = await dataUnionClient.getDataUnion(dataUnion)

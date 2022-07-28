@@ -48,13 +48,19 @@ class JoinServer {
 			level: logLevel,
 		}),
 		signedRequestValidator = SignedRequestValidator.validator,
-		joinRequestService = new JoinRequestService(logger, onMemberJoin),
+		joinRequestService = undefined,
 	} = {}) {
 
 		this.expressApp = expressApp
 		this.logger = logger
 		this.signedRequestValidator = signedRequestValidator
 		this.customJoinRequestValidator = customJoinRequestValidator
+		this.clients = new Map()
+		this.clients.set('ethereum', this.newDataUnionClient('ethereum', privateKey))
+		this.clients.set('polygon', this.newDataUnionClient('polygon', privateKey))
+		if (!joinRequestService) {
+			joinRequestService = new JoinRequestService(logger, this.clients, onMemberJoin)
+		}
 		this.joinRequestService = joinRequestService
 		this.customRoutes = customRoutes
 
@@ -66,10 +72,6 @@ class JoinServer {
 		}
 		this.httpServer = httpServer
 		this.port = port
-
-		this.clients = new Map()
-		this.clients.set('ethereum', this.newDataUnionClient('ethereum', privateKey))
-		this.clients.set('polygon', this.newDataUnionClient('polygon', privateKey))
 
 		// Listen for Linux Signals
 		const invalidExitArg = 128
@@ -174,8 +176,7 @@ class JoinServer {
 		}
 
 		try {
-			const client = this.clients[chain.toString()]
-			const joinResponse = await this.joinRequestService.create(client, member.toString(), dataUnion.toString(), req.validatedRequest.chain)
+			const joinResponse = await this.joinRequestService.create(member.toString(), dataUnion.toString(), req.validatedRequest.chain)
 			this.logger.info(joinResponse)
 			this.sendJsonResponse(res, 200, joinResponse)
 		} catch(err) {
