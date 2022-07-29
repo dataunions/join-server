@@ -8,7 +8,7 @@
     "npm": "8.1.2"
   },
   "bin": {
-    "join-server": "src/cmd/duj-srv/main.js"
+    "join-server": "src/cmd/join-server/main.js"
   },
   "scripts": {
     "test": "mocha --recursive --check-leaks test",

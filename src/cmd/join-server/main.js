@@ -2,7 +2,7 @@ const process = require('process')
 const commander = require('commander')
 const { JoinServer } = require('../../app')
 const packageJson = require('../../../package.json')
-const programName = 'duj-srv'
+const programName = 'join-server'
 
 async function main(argv) {
 	const program = new commander.Command()
