@@ -131,11 +131,7 @@ class JoinServer {
 	}
 
 	sendJsonError(res, status, message) {
-		const errorMessage = {
-			error: {
-				message: message,
-			},
-		}
+		const errorMessage = new rest.ErrorMessage(message)
 		this.sendJsonResponse(res, status, errorMessage)
 	}
 
