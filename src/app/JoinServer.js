@@ -10,9 +10,6 @@ const rest = require('../rest')
 const domain = require('../domain')
 const { JoinRequestService } = require('./JoinRequestService')
 
-const TOLERANCE_MILLIS = 5 * 60 * 1000 // 5 min
-const SignedRequestValidator = require('./SignedRequestValidatorMiddleware')(TOLERANCE_MILLIS)
-
 class JoinServer {
 	constructor({
 		/**
@@ -46,7 +43,7 @@ class JoinServer {
 			name: 'main',
 			level: logLevel,
 		}),
-		signedRequestValidator = SignedRequestValidator.validator,
+		signedRequestValidator = rest.SignedRequestValidator.validator,
 		joinRequestService = undefined,
 	} = {}) {
 

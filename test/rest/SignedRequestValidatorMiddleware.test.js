@@ -2,7 +2,7 @@ const chai = require('chai')
 const { expect } = chai
 chai.use(require('chai-as-promised'))
 const sinon = require('sinon')
-const { validator, InvalidSignatureError, InvalidTimestampError } = require('../../src/app/SignedRequestValidatorMiddleware')()
+const rest = require('../../src/rest/')
 
 describe('Signed request validator middleware', () => {
 
@@ -26,7 +26,7 @@ describe('Signed request validator middleware', () => {
 			}
 		}
 
-		await validator(request)
+		await rest.SignedRequestValidator.validator(request)
 		expect(request.validatedRequest).to.deep.equal(JSON.parse(request.body.request))
 	})
 
@@ -40,7 +40,7 @@ describe('Signed request validator middleware', () => {
 			}
 		}
 
-		await expect(validator(request)).to.be.rejectedWith(InvalidSignatureError)
+		await expect(rest.SignedRequestValidator.validator(request)).to.be.rejectedWith(rest.SignedRequestValidator.InvalidSignatureError)
 	})
 
 	it('rejects requests with tampered data', async () => {
@@ -53,7 +53,7 @@ describe('Signed request validator middleware', () => {
 			}
 		}
 
-		await expect(validator(request)).to.be.rejectedWith(InvalidSignatureError)
+		await expect(rest.SignedRequestValidator.validator(request)).to.be.rejectedWith(rest.SignedRequestValidator.InvalidSignatureError)
 	})
 
 	it('rejects requests in the future', async () => {
@@ -66,7 +66,7 @@ describe('Signed request validator middleware', () => {
 			}
 		}
 
-		await expect(validator(request)).to.be.rejectedWith(InvalidTimestampError)
+		await expect(rest.SignedRequestValidator.validator(request)).to.be.rejectedWith(rest.SignedRequestValidator.InvalidTimestampError)
 	})
 
 	it('rejects requests in the past', async () => {
@@ -79,7 +79,7 @@ describe('Signed request validator middleware', () => {
 			}
 		}
 
-		await expect(validator(request)).to.be.rejectedWith(InvalidTimestampError)
+		await expect(rest.SignedRequestValidator.validator(request)).to.be.rejectedWith(rest.SignedRequestValidator.InvalidTimestampError)
 	})
 
 })
