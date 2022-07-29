@@ -1,6 +1,6 @@
 class Chain {
-	static Ethereum = new Chain("ethereum")
-	static Polygon = new Chain("polygon")
+	static Ethereum = Object.freeze(new Chain("ethereum"))
+	static Polygon = Object.freeze(new Chain("polygon"))
 
 	constructor(name) {
 		if (name === undefined) {
