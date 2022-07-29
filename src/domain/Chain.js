@@ -2,7 +2,7 @@ class Chain {
 	static Ethereum = Object.freeze(new Chain("ethereum"))
 	static Polygon = Object.freeze(new Chain("polygon"))
 
-	constructor(name) {
+	constructor(name /* string */) {
 		if (name === undefined) {
 			throw new Error('Chain name is required')
 		}
