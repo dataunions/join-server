@@ -41,7 +41,7 @@ npm-pack: ## Run npm pack
 
 .PHONY: npm-test
 npm-test: node_modules ## Run npm test
-	$(call npm, test)
+	$(call npm, test -- --trace-warnings)
 
 NODE_BIN:=$(shell pwd)/node_modules/.bin
 .PHONY: eslint
