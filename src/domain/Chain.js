@@ -1,4 +1,5 @@
 class Chain {
+	static DEFAULT_CHAIN_NAME = Object.freeze('polygon')
 	static Ethereum = Object.freeze(new Chain("ethereum"))
 	static Polygon = Object.freeze(new Chain("polygon"))
 

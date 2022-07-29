@@ -10,7 +10,6 @@ const handler = require('../handler')
 const domain = require('../domain')
 const { JoinRequestService } = require('./JoinRequestService')
 
-const DEFAULT_CHAIN_NAME = 'polygon'
 const TOLERANCE_MILLIS = 5 * 60 * 1000 // 5 min
 const SignedRequestValidator = require('./SignedRequestValidatorMiddleware')(TOLERANCE_MILLIS)
 
@@ -165,7 +164,7 @@ class JoinServer {
 			return
 		}
 		if (chain === undefined) {
-			chain = DEFAULT_CHAIN_NAME
+			chain = domain.Chain.DEFAULT_CHAIN_NAME
 		}
 
 		try {
