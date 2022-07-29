@@ -1,4 +1,4 @@
-const { newUnitTestServer, logger } = require('../handler/newUnitTestServer')
+const { newUnitTestServer, logger } = require('../rest/newUnitTestServer')
 const request = require('supertest')
 const { assert } = require('chai')
 const sinon = require('sinon')
