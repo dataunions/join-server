@@ -35,10 +35,12 @@ describe('Error handler', async () => {
 	]
 	happyTestCases.forEach((tc) => {
 		it(tc.name, async () => {
+			const expectedStatus = 200
 			const res = await request(srv.expressApp)
 				.get('/hello')
+				.expect((res) => (res.status != expectedStatus ? console.error(res.body) : true)) // print debug info if something went wrong
+				.expect(expectedStatus)
 				.expect('Content-Type', 'application/json; charset=utf-8')
-				.expect(200)
 			assert.equal(res.body.message, 'hello')
 		})
 	})
@@ -51,10 +53,12 @@ describe('Error handler', async () => {
 	]
 	testCases.forEach((tc) => {
 		it(tc.name, async () => {
+			const expectedStatus = 500
 			const res = await request(srv.expressApp)
 				.post('/error')
+				.expect((res) => (res.status != expectedStatus ? console.error(res.body) : true)) // print debug info if something went wrong
+				.expect(expectedStatus)
 				.expect('Content-Type', 'application/json; charset=utf-8')
-				.expect(500)
 			assert.equal(res.body.error.message, tc.expectedErrorMessage)
 		})
 	})
