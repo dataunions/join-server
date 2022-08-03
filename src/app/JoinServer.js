@@ -52,10 +52,10 @@ class JoinServer {
 		this.signedRequestValidator = signedRequestValidator
 		this.customJoinRequestValidator = customJoinRequestValidator
 		if (!joinRequestService) {
-			this.clients = new Map()
-			this.clients.set('ethereum', this.newDataUnionClient('ethereum', privateKey))
-			this.clients.set('polygon', this.newDataUnionClient('polygon', privateKey))
-			joinRequestService = new JoinRequestService(logger, this.clients, onMemberJoin)
+			const clients = new Map()
+			clients.set('ethereum', this.newDataUnionClient('ethereum', privateKey))
+			clients.set('polygon', this.newDataUnionClient('polygon', privateKey))
+			joinRequestService = new JoinRequestService(logger, clients, onMemberJoin)
 		}
 		this.joinRequestService = joinRequestService
 		this.customRoutes = customRoutes
