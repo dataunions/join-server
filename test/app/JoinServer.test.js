@@ -32,6 +32,7 @@ describe('POST /join', async () => {
 	})
 
 	afterEach(() => {
+		srv.close()
 		srv = undefined
 	})
 

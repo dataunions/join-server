@@ -10,6 +10,11 @@ const rest = require('../rest')
 const domain = require('../domain')
 const { JoinRequestService } = require('./JoinRequestService')
 
+const signals = Object.freeze({
+	'SIGINT': 2,
+	'SIGTERM': 15,
+})
+
 class JoinServer {
 	constructor({
 		/**
@@ -71,13 +76,10 @@ class JoinServer {
 
 		// Listen for Linux Signals
 		const invalidExitArg = 128
-		const signals = Object.freeze({
-			'SIGINT': 2,
-			'SIGTERM': 15,
-		})
 		Object.keys(signals).forEach((signal) => {
 			process.on(signal, () => {
 				this.httpServer.close(() => {
+					this.close()
 					this.logger.info(`HTTP server stopped by signal: ${signal}`)
 					const exitCode = invalidExitArg + signals[signal]
 					process.exit(exitCode)
@@ -86,6 +88,12 @@ class JoinServer {
 		})
 
 		this.routes()
+	}
+
+	close() {
+		Object.keys(signals).forEach((signal) => {
+			process.removeAllListeners(signal)
+		})
 	}
 
 	newDataUnionClient(chain, privateKey) {
