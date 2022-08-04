@@ -164,9 +164,6 @@ class JoinServer {
 			this.sendJsonError(res, 400, `Invalid chain name: '${req.validatedRequest.chain}'`)
 			return
 		}
-		if (chain === undefined) {
-			chain = domain.Chain.DEFAULT_CHAIN_NAME
-		}
 
 		try {
 			await this.customJoinRequestValidator(req.body.address, req.validatedRequest)
@@ -176,7 +173,7 @@ class JoinServer {
 		}
 
 		try {
-			const joinResponse = await this.joinRequestService.create(member.toString(), dataUnion.toString(), req.validatedRequest.chain)
+			const joinResponse = await this.joinRequestService.create(member.toString(), dataUnion.toString(), chain.toString())
 			this.logger.info(joinResponse)
 			this.sendJsonResponse(res, 200, joinResponse)
 		} catch(err) {

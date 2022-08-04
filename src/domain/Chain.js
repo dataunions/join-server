@@ -1,5 +1,4 @@
 class Chain {
-	static DEFAULT_CHAIN_NAME = Object.freeze('polygon')
 	static Ethereum = Object.freeze(new Chain("ethereum"))
 	static Polygon = Object.freeze(new Chain("polygon"))
 
@@ -17,12 +16,12 @@ class Chain {
 		return this.name
 	}
 
-	static fromName(name) /* Chain | undefined */{
+	static fromName(name) /* Chain */{
 		if (name === undefined) {
-			return undefined
+			throw new Error(`Chain name is required`)
 		}
 		if (typeof name !== 'string') {
-			return undefined
+			throw new Error(`Chain name must be a string`)
 		}
 		switch (name.toLowerCase()) {
 		case Chain.Ethereum.toString():

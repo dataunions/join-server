@@ -47,15 +47,6 @@ describe('POST /join', async () => {
 				}),
 			},
 		},
-		{
-			name: 'send join data union request without chain',
-			body: {
-				address: '0x766760C748bcEcf5876a6469a6aed3C642CdA261',
-				request: JSON.stringify({
-					dataUnion: '0x81ed645D344cB2096aBA56B94d336E6dcF80f6C6',
-				}),
-			},
-		},
 	]
 	happyTestCases.forEach((tc) => {
 		it(tc.name, async () => {
@@ -117,6 +108,16 @@ describe('POST /join', async () => {
 				}),
 			},
 			expectedErrorMessage: `Invalid chain name: 'foobar'`,
+		},
+		{
+			name: 'send join data union request without chain',
+			body: {
+				address: '0x766760C748bcEcf5876a6469a6aed3C642CdA261',
+				request: JSON.stringify({
+					dataUnion: '0x81ed645D344cB2096aBA56B94d336E6dcF80f6C6',
+				}),
+			},
+			expectedErrorMessage: `Invalid chain name: 'undefined'`,
 		},
 	]
 	testCases.forEach((tc) => {

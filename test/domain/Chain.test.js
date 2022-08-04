@@ -18,11 +18,22 @@ describe('Chain', () => {
 			assert.isTrue(true)
 		}
 	})
-	it('fromName() returns undefined on undefined name', () => {
-		assert.equal(domain.Chain.fromName(undefined), undefined)
+	it('fromName() throws on undefined name', () => {
+		try {
+			domain.Chain.from(undefined)
+			assert.fail('expecting error from Chain.from({})')
+		} catch (err) {
+			assert.isTrue(true)
+		}
 	})
-	it('fromName() returns undefined on non string argument', () => {
-		assert.equal(domain.Chain.fromName({}), undefined)
+	it('fromName() throws on non string argument', () => {
+		try {
+			domain.Chain.from({})
+			assert.fail('expecting error from Chain.from({})')
+		} catch (err) {
+			assert.isTrue(true)
+		}
+
 	})
 	it('fromName() loads Chain instance from given string', () => {
 		assert.equal(domain.Chain.fromName('Ethereum'), domain.Chain.Ethereum)
