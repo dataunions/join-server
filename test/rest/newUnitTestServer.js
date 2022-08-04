@@ -9,7 +9,7 @@ const logger = pino({
 
 function newUnitTestServer(conf) {
 	return new app.JoinServer({
-		dataUnionClient: null,
+		privateKey: '52ada1a52c1224e7c5d7b17860cb622efb60eb4145e297a1b28b6fa06649be52',
 		port: process.env.PORT,
 		logger,
 		...conf,
