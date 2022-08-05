@@ -1,7 +1,6 @@
-class Chain {
-	static Ethereum = Object.freeze(new Chain("ethereum"))
-	static Polygon = Object.freeze(new Chain("polygon"))
+const config = require('@streamr/config')
 
+class Chain {
 	constructor(name /* string */) {
 		if (name === undefined) {
 			throw new Error('Chain name is required')
@@ -23,14 +22,12 @@ class Chain {
 		if (typeof name !== 'string') {
 			throw new Error(`Chain name must be a string`)
 		}
-		switch (name.toLowerCase()) {
-		case Chain.Ethereum.toString():
-			return Chain.Ethereum
-		case Chain.Polygon.toString():
-			return Chain.Polygon
-		default:
+		const chains = config.Chains.load()
+		const chain = chains[name.toLowerCase()]
+		if (chain === undefined) {
 			throw new Error(`Chain name is unknown: '${name}'`)
 		}
+		return new Chain(chain.toString())
 	}
 }
 
