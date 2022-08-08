@@ -58,8 +58,14 @@ class JoinServer {
 		this.customJoinRequestValidator = customJoinRequestValidator
 		if (!joinRequestService) {
 			const clients = new Map()
-			clients.set('ethereum', this.newDataUnionClient('ethereum', privateKey))
-			clients.set('polygon', this.newDataUnionClient('polygon', privateKey))
+			const chains = config.Chains.load()
+			for (const chainName in chains) {
+				for (const contractName in chains[chainName].contracts) {
+					if (contractName === "DataUnionFactory") {
+						clients.set(chainName, this.newDataUnionClient(chains[chainName], privateKey))
+					}
+				}
+			}
 			joinRequestService = new JoinRequestService(logger, clients, onMemberJoin)
 		}
 		this.joinRequestService = joinRequestService
@@ -96,16 +102,15 @@ class JoinServer {
 		})
 	}
 
-	newDataUnionClient(chain, privateKey) {
-		const chains = config.Chains.load()
+	newDataUnionClient(chain /* config.Chain */, privateKey /* string */) {
 		const options = {
 			auth: {
 				privateKey,
 			},
 			network: {
-				name: chains[chain].name,
-				chainId: chains[chain].id,
-				rpcs: chains[chain].rpcEndpoints,
+				name: chain.name,
+				chainId: chain.id,
+				rpcs: chain.rpcEndpoints,
 			}
 		}
 		return new DataUnionClient(options)
