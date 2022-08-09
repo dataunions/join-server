@@ -39,9 +39,9 @@ npm-publish: ## Run npm publish
 npm-pack: ## Run npm pack
 	$(call npm, pack)
 
-.PHONY: npm-test
-npm-test: node_modules ## Run npm test
-	$(call npm, test -- --trace-warnings)
+.PHONY: test
+test: node_modules ## Run all test
+	$(call node, $(NODE_BIN)/mocha --node-option trace-warnings --recursive --check-leaks --full-trace --inline-diffs test)
 
 NODE_BIN:=$(shell pwd)/node_modules/.bin
 .PHONY: eslint
@@ -51,9 +51,6 @@ eslint: ## Run eslint
 .PHONY: eslint-fix
 eslint-fix: ## Run eslint with fix options
 	$(call node, $(NODE_BIN)/eslint --config .eslintrc.js --ext .js --fix .)
-
-.PHONY: test
-test: npm-test ## Run all tests
 
 # private key: 0x7013b52cd5bcefcb813252ba4fd19de4ffbc7be60cd3da017448bbd883b15457
 # address: 0x516115E2a11393d1C91c41a14cCf2eFC1D6F5931

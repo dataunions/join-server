@@ -11,7 +11,7 @@
     "join-server": "src/cmd/join-server/main.js"
   },
   "scripts": {
-    "test": "mocha --recursive --check-leaks test",
+    "test": "make test",
     "eslint": "make eslint",
     "eslint-fix": "make eslint-fix"
   },
