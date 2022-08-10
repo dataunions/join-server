@@ -5,7 +5,7 @@ const sinon = require('sinon')
 const { JoinRequestService, DataUnionJoinError, DataUnionRetrievalError } = require('../../src/app/JoinRequestService')
 const logger = require('../rest/newUnitTestServer')
 
-describe('Join Request Service', () => {
+describe('JoinRequestService.create()', () => {
 	const MEMBER_ADDRESS = '0x0123456789012345678901234567890123456789'
 	const DATAUNION_ADDRESS = '0x1234567890123456789012345678901234567890'
 	const CHAIN = 'polygon'
