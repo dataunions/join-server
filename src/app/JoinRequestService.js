@@ -1,7 +1,16 @@
 class JoinRequestService {
 	constructor(logger, clients, onMemberJoin) {
+		if (logger === undefined) {
+			throw new Error(`Variable logger is required`)
+		}
 		this.logger = logger
+		if (clients === undefined) {
+			throw new Error(`Variable clients is required`)
+		}
 		this.clients = clients
+		if (onMemberJoin === undefined) {
+			throw new Error(`Function onMemberJoin is required`)
+		}
 		this.onMemberJoin = onMemberJoin
 	}
 
