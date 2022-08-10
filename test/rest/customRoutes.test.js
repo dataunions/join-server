@@ -1,26 +1,30 @@
-const express = require('express')
+const { newUnitTestServer } = require('./newUnitTestServer')
 const request = require('supertest')
 const { assert } = require('chai')
-const { logger } = require('./newUnitTestServer')
-const { error } =  require('../../src/rest/error')
 
-describe('Error handler', async () => {
+describe('Custom Routes', async () => {
 	let srv
 
 	before(() => {
-		srv = express()
-		srv.get('/hello', function(_req, res, _next) {
-			res.status(200)
-			res.set('content-type', 'application/json')
-			res.send({message:'hello'})
+		srv = newUnitTestServer({
+			signedRequestValidator: async (req) => {
+				req.validatedRequest = {}
+			},
+			customRoutes: (app) => {
+				app.get('/hello', function(_req, res, _next) {
+					res.status(200)
+					res.set('content-type', 'application/json')
+					res.send({message:'hello'})
+				})
+				app.post('/error', function(_req, _res, _next) {
+					throw new Error('mock error message')
+				})
+			}
 		})
-		srv.post('/error', function(_req, _res, _next) {
-			throw new Error('mock error message')
-		})
-		srv.use(error(logger))
 	})
 
 	after(() => {
+		srv.close()
 		srv = undefined
 	})
 
@@ -33,7 +37,7 @@ describe('Error handler', async () => {
 	happyTestCases.forEach((tc) => {
 		it(tc.name, async () => {
 			const expectedStatus = 200
-			const res = await request(srv)
+			const res = await request(srv.expressApp)
 				.get('/hello')
 				.expect((res) => (res.status != expectedStatus ? console.error(res.body) : true)) // print debug info if something went wrong
 				.expect(expectedStatus)
@@ -44,14 +48,14 @@ describe('Error handler', async () => {
 
 	const testCases = [
 		{
-			name: 'error handler should catch error',
+			name: 'Error on custom route',
 			expectedErrorMessage: 'mock error message',
 		},
 	]
 	testCases.forEach((tc) => {
 		it(tc.name, async () => {
 			const expectedStatus = 500
-			const res = await request(srv)
+			const res = await request(srv.expressApp)
 				.post('/error')
 				.expect((res) => (res.status != expectedStatus ? console.error(res.body) : true)) // print debug info if something went wrong
 				.expect(expectedStatus)
