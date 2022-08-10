@@ -41,7 +41,7 @@ npm-pack: ## Run npm pack
 
 .PHONY: test
 test: node_modules ## Run all test
-	$(call node, $(NODE_BIN)/mocha --node-option trace-warnings --recursive --check-leaks --full-trace --inline-diffs test)
+	$(call node, $(NODE_BIN)/mocha --node-option trace-warnings --recursive --check-leaks --full-trace test)
 
 NODE_BIN:=$(shell pwd)/node_modules/.bin
 .PHONY: eslint
