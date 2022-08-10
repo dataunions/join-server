@@ -5,7 +5,7 @@ const { assert } = require('chai')
 const sinon = require('sinon')
 const app = require('../../src/app')
 
-describe('POST /join', async () => {
+describe('JoinServer', async () => {
 	let srv
 
 	beforeEach(() => {
@@ -63,5 +63,32 @@ describe('POST /join', async () => {
 		})
 
 		assert(customRoutes.calledOnceWithExactly(srv.expressApp))
+	})
+
+	describe('constructor', () => {
+		const testCases = [
+			{
+				name: 'private key is required',
+				args: {
+					privateKey: undefined,
+				},
+				expectedErrorMessage: 'Private key is required',
+			},
+		]
+		testCases.forEach((tc) => {
+			it(tc.name, async () => {
+				try {
+					new app.JoinServer({
+						privateKey: tc.args.privateKey
+					})
+					assert.fail('expecting error message')
+				} catch (err) {
+					if (err.message !== tc.expectedErrorMessage) {
+						assert.fail(`expecting error message: '${tc.expectedErrorMessage}', got: '${err.message}'`)
+					}
+					assert.isTrue(true)
+				}
+			})
+		})
 	})
 })

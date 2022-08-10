@@ -19,7 +19,7 @@ class JoinServer {
 		 */
 
 		// Hex-encoded private key for your joinPartAgent address
-		privateKey,
+		privateKey = undefined,
 
 		// HTTP port the server listens on
 		port = 5555,
@@ -48,7 +48,9 @@ class JoinServer {
 		signedRequestValidator = rest.SignedRequestValidator.validator,
 		joinRequestService = undefined,
 	} = {}) {
-
+		if (privateKey === undefined) {
+			throw new Error(`Private key is required`)
+		}
 		this.expressApp = expressApp
 		this.logger = logger
 		this.signedRequestValidator = signedRequestValidator
