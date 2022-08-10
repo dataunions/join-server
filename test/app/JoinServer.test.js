@@ -1,4 +1,5 @@
-const { newUnitTestServer, logger } = require('../rest/newUnitTestServer')
+const { newUnitTestServer } = require('../rest/newUnitTestServer')
+const { unitTestLogger } = require('../rest/unitTestLogger')
 const request = require('supertest')
 const { assert } = require('chai')
 const sinon = require('sinon')
@@ -10,7 +11,7 @@ describe('POST /join', async () => {
 	beforeEach(() => {
 		// JoinRequestService with mocked create()
 		const joinRequestService = new app.JoinRequestService(
-			logger,
+			unitTestLogger,
 			new Map(), // clients
 			function(_member, _dataUnion, _chain) {}, // onMemberJoin
 		)
@@ -23,6 +24,7 @@ describe('POST /join', async () => {
 		})
 
 		srv = newUnitTestServer({
+			logger: unitTestLogger,
 			joinRequestService,
 			signedRequestValidator: sinon.spy(async (req) => {
 				req.validatedRequest = JSON.parse(req.body.request)

@@ -1,6 +1,8 @@
 const { newUnitTestServer } = require('./newUnitTestServer')
 const request = require('supertest')
 const { assert } = require('chai')
+const { unitTestLogger } = require('./unitTestLogger')
+const { error } =  require('../../src/rest/error')
 
 describe('Custom Routes', async () => {
 	let srv
@@ -19,6 +21,7 @@ describe('Custom Routes', async () => {
 				app.post('/error', function(_req, _res, _next) {
 					throw new Error('mock error message')
 				})
+				app.use(error(unitTestLogger))
 			}
 		})
 	})

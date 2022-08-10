@@ -2,7 +2,7 @@ const chai = require('chai')
 const { assert } = chai
 chai.use(require('chai-as-promised'))
 const app = require('../../src/app')
-const logger = require('../rest/newUnitTestServer')
+const { unitTestLogger } = require('../rest/unitTestLogger')
 
 describe('JoinRequestService constructor', () => {
 	beforeEach(() => {
@@ -24,7 +24,7 @@ describe('JoinRequestService constructor', () => {
 		{
 			name: 'clients is required',
 			args: {
-				logger: logger,
+				logger: unitTestLogger,
 				clients: undefined,
 				onMemberJoin: function(_member, _dataUnion, _chain) {},
 			},
@@ -33,7 +33,7 @@ describe('JoinRequestService constructor', () => {
 		{
 			name: 'onMemberJoin is required',
 			args: {
-				logger: logger,
+				logger: unitTestLogger,
 				clients: new Map(),
 				onMemberJoin: undefined,
 			},
@@ -44,7 +44,7 @@ describe('JoinRequestService constructor', () => {
 		{
 			name: 'creates new JoinRequestService',
 			args: {
-				logger: logger,
+				logger: unitTestLogger,
 				clients: new Map(),
 				onMemberJoin: function(_member, _dataUnion, _chain) {},
 			},

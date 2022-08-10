@@ -3,7 +3,7 @@ const { assert, expect } = chai
 chai.use(require('chai-as-promised'))
 const sinon = require('sinon')
 const { JoinRequestService, DataUnionJoinError, DataUnionRetrievalError } = require('../../src/app/JoinRequestService')
-const logger = require('../rest/newUnitTestServer')
+const { unitTestLogger } = require('../rest/unitTestLogger')
 
 describe('JoinRequestService.create()', () => {
 	const MEMBER_ADDRESS = '0x0123456789012345678901234567890123456789'
@@ -30,7 +30,7 @@ describe('JoinRequestService.create()', () => {
 
 		onMemberJoin = sinon.stub()
 
-		joinRequestService = new JoinRequestService(logger, clients, onMemberJoin)
+		joinRequestService = new JoinRequestService(unitTestLogger, clients, onMemberJoin)
 	})
 
 	afterEach(() => {

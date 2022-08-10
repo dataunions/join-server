@@ -1,7 +1,7 @@
 const express = require('express')
 const request = require('supertest')
 const { assert } = require('chai')
-const { logger } = require('./newUnitTestServer')
+const { unitTestLogger } = require('./unitTestLogger')
 const { error } =  require('../../src/rest/error')
 
 describe('Error handler', async () => {
@@ -17,7 +17,7 @@ describe('Error handler', async () => {
 		srv.post('/error', function(_req, _res, _next) {
 			throw new Error('mock error message')
 		})
-		srv.use(error(logger))
+		srv.use(error(unitTestLogger))
 	})
 
 	after(() => {
