@@ -45,6 +45,12 @@ class JoinRequestService {
 			chain: chain,
 		}
 	}
+
+	close() {
+		this.clients.forEach((dataUnionClient) => {
+			dataUnionClient.close()
+		})
+	}
 }
 
 class DataUnionRetrievalError extends Error {}

@@ -97,8 +97,20 @@ class JoinServer {
 	}
 
 	close() {
+		this.joinRequestService.close()
 		Object.keys(signals).forEach((signal) => {
 			process.removeAllListeners(signal)
+		})
+		if (!this.server) {
+			return
+		}
+		return new Promise((done, fail) => {
+			this.server.close((err) => {
+				if (err) {
+					fail(err)
+				}
+				done()
+			})
 		})
 	}
 
@@ -128,10 +140,15 @@ class JoinServer {
 
 	start() {
 		const backlog = 511
-		const callback = () => {
-			this.logger.info(`HTTP server started on port: ${this.port}`)
-		}
-		this.expressApp.listen(this.port, backlog, callback)
+		return new Promise((done, fail) => {
+			this.server = this.expressApp.listen(this.port, backlog, (err) => {
+				if (err) {
+					fail(err)
+				}
+				this.logger.info(`HTTP server started on port: ${this.port}`)
+				done()
+			})
+		})
 	}
 
 	sendJsonResponse(res, status, response) {
