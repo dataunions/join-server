@@ -82,12 +82,12 @@ class JoinServer {
 		this.port = port
 
 		// Listen for Linux Signals
-		const invalidExitArg = 128
 		Object.keys(signals).forEach((signal) => {
 			process.on(signal, () => {
 				this.httpServer.close(() => {
-					this.close()
 					this.logger.info(`HTTP server stopped by signal: ${signal}`)
+					this.close()
+					const invalidExitArg = 128
 					const exitCode = invalidExitArg + signals[signal]
 					process.exit(exitCode)
 				})
