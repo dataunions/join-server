@@ -4,13 +4,7 @@ chai.use(require('chai-as-promised'))
 const app = require('../../src/app')
 const { unitTestLogger } = require('../rest/unitTestLogger')
 
-describe('JoinRequestService constructor', () => {
-	beforeEach(() => {
-	})
-
-	afterEach(() => {
-	})
-
+describe('JoinRequestService', () => {
 	const testCases = [
 		{
 			name: 'logger is required',
@@ -55,7 +49,7 @@ describe('JoinRequestService constructor', () => {
 			it(tc.name, () => {
 				try {
 					new app.JoinRequestService(tc.args.logger, tc.args.clients, tc.args.onMemberJoin)
-					assert.isTrue(true)
+					assert.fail(`expecting error`)
 				} catch (err) {
 					if (err.message !== tc.expectedErrorMessage) {
 						assert.fail(`expecting error '${tc.expectedErrorMessage}', got: '${err.message}'`)
