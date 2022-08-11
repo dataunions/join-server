@@ -2,6 +2,7 @@ const process = require('process')
 const commander = require('commander')
 const app = require('../../app')
 const packageJson = require('../../../package.json')
+// programName is the name of the executable.
 const programName = 'join-server'
 
 async function main(argv) {

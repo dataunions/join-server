@@ -77,6 +77,8 @@ class JoinServer {
 			httpServer = http.createServer(httpServerOptions, expressApp)
 		}
 		this.httpServer = httpServer
+
+		// Port is the HTTP TCP/IP port.
 		this.port = port
 
 		// Listen for Linux Signals
