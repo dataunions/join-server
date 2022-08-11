@@ -1,6 +1,6 @@
 const process = require('process')
 const commander = require('commander')
-const { JoinServer } = require('../../app')
+const app = require('../../app')
 const packageJson = require('../../../package.json')
 const programName = 'join-server'
 
@@ -45,7 +45,7 @@ async function main(argv) {
 		process.exit(1)
 	}
 
-	const srv = new JoinServer({
+	const srv = new app.JoinServer({
 		privateKey: options.k,
 		port: options.p,
 		logLevel: options.l,
