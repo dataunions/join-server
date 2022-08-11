@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const process = require('process')
 const commander = require('commander')
 const app = require('../../app')
