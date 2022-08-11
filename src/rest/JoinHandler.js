@@ -55,7 +55,7 @@ class JoinHandler {
 			const joinResponse = await this.joinRequestService.create(member.toString(), dataUnion.toString(), chain.toString())
 			this.logger.info(joinResponse)
 			this.sendJsonResponse(res, 200, joinResponse)
-		} catch(err) {
+		} catch (err) {
 			this.logger.info(err)
 			this.sendJsonError(res, 400, err.message)
 		}

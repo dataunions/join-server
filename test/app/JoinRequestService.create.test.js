@@ -27,9 +27,7 @@ describe('JoinRequestService', () => {
 
 		const clients = new Map()
 		clients.set(CHAIN, dataUnionClient)
-
 		onMemberJoin = sinon.stub()
-
 		joinRequestService = new JoinRequestService(unitTestLogger, clients, onMemberJoin)
 	})
 
@@ -38,7 +36,6 @@ describe('JoinRequestService', () => {
 	})
 
 	describe('create', () => {
-
 		it('adds members using the DU client', async () => {
 			const response = await joinRequestService.create(MEMBER_ADDRESS, DATAUNION_ADDRESS, CHAIN)
 			assert.isTrue(dataUnionObject.addMembers.calledWith([MEMBER_ADDRESS]))
@@ -67,5 +64,4 @@ describe('JoinRequestService', () => {
 			assert.isTrue(onMemberJoin.calledWith(MEMBER_ADDRESS, DATAUNION_ADDRESS, CHAIN))
 		})
 	})
-
 })

@@ -6,7 +6,6 @@ const unitTestLogger = pino({
 	enabled: true,
 })
 
-
 module.exports = {
 	unitTestLogger,
 }
