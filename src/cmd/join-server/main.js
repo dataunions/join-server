@@ -50,7 +50,7 @@ async function main(argv) {
 		port: options.p,
 		logLevel: options.l,
 	})
-	srv.start()
+	srv.listen()
 }
 
 main(process.argv).catch((e) => {

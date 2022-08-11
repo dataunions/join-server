@@ -137,7 +137,7 @@ class JoinServer {
 		this.expressApp.use(rest.error(this.logger))
 	}
 
-	start() {
+	listen() {
 		const backlog = 511
 		return new Promise((done, fail) => {
 			this.server = this.expressApp.listen(this.port, backlog, (err) => {
